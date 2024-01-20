@@ -1,6 +1,12 @@
 package com.api.book.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "book_id")
     private int id;
     private String title;
     private String author;

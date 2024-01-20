@@ -1,43 +1,66 @@
 package com.api.book.service;
 
+import com.api.book.dao.BookRepository;
 import com.api.book.model.Book;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class BookService {
-    public static List<Book> bookList = new ArrayList<>();
-    static {
-        bookList.add(new Book(1, "C++", "Bjarne"));
-        bookList.add(new Book(2, "C", "Dennis"));
-        bookList.add(new Book(3, "Java", "Gosling"));
-    }
+    @Autowired
+    private BookRepository bookRepository;
     public List<Book> getAllBooks() {
-        return bookList;
+        try {
+            return (List<Book>) this.bookRepository.findAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     public Book getBookById(int id) {
-        Book book = bookList.stream().filter(b -> b.getId() == id).findFirst().get();
-        return book;
+        try {
+            return this.bookRepository.findById(id).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public Book addBook(Book book) {
-        bookList.add(book);
-        return book;
+        try{
+            this.bookRepository.save(book);
+            return book;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public List<Book> deleteBook(int id) {
-        bookList = bookList.stream().filter(book -> book.getId()!=id).collect(Collectors.toList());
-        return bookList;
+        try {
+            this.bookRepository.deleteById(id);
+            return getAllBooks();
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
-    public void updateBook(Book book, int id) {
-        bookList = bookList.stream().map(b -> {
-            if(b.getId() == id)
-                b = book;
-            return b;
-        }).collect(Collectors.toList());
+    public Book updateBook(Book book, int id) {
+        try {
+            if(getBookById(id) == null)
+                throw new Exception();
+            book.setId(id);
+            return addBook(book);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
