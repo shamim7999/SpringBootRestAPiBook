@@ -1,6 +1,7 @@
 package com.api.book.service;
 
 import com.api.book.dao.BookRepository;
+import com.api.book.model.Author;
 import com.api.book.model.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,8 +57,24 @@ public class BookService {
         try {
             if(getBookById(id) == null)
                 throw new Exception();
-            book.setId(id);
-            return addBook(book);
+            Book b = null;
+            Author a = null;
+            b = getBookById(id);
+            a = b.getAuthor();
+
+            b.setId(id);
+            if(book.getTitle()!=null)
+                b.setTitle(book.getTitle());
+
+            if(book.getAuthor().getName()!=null)
+                a.setName(book.getAuthor().getName());
+
+            if(book.getAuthor().getCity()!=null)
+                a.setCity(book.getAuthor().getCity());
+
+            b.setAuthor(a);
+
+            return addBook(b);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
