@@ -1,5 +1,6 @@
 package com.api.book.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,6 +11,17 @@ public class Author {
     private int id;
     private String name;
     private String city;
+    @OneToOne(mappedBy = "author")
+    @JsonBackReference /// ---> It will not go back. So cyclic stuffs will be prevented here.
+    private Book book;
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
 
     public Author(int id, String name, String city) {
         this.id = id;
