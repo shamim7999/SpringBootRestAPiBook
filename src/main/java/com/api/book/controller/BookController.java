@@ -41,7 +41,7 @@ public class BookController {
         Book b = null;
         try {
             b = this.bookService.addBook(book);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(b);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
